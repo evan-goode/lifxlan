@@ -219,7 +219,10 @@ class LifxLAN:
         sleep_interval = 0.05 if num_repeats > 20 else 0
         while(sent_msg_count < num_repeats):
             for ip_addr in UDP_BROADCAST_IP_ADDRS:
-                self.sock.sendto(msg.packed_message, (ip_addr, UDP_BROADCAST_PORT))
+                try:
+                    self.sock.sendto(msg.packed_message, (ip_addr, UDP_BROADCAST_PORT))
+                except PermissionError:
+                    pass
             if self.verbose:
                 print("SEND: " + str(msg))
             sent_msg_count += 1
@@ -243,7 +246,10 @@ class LifxLAN:
             while (self.num_devices == None or num_devices_seen < self.num_devices) and not timedout:
                 if not sent:
                     for ip_addr in UDP_BROADCAST_IP_ADDRS:
-                        self.sock.sendto(msg.packed_message, (ip_addr, UDP_BROADCAST_PORT))
+                        try:
+                            self.sock.sendto(msg.packed_message, (ip_addr, UDP_BROADCAST_PORT))
+                        except PermissionError:
+                            pass
                     sent = True
                     if self.verbose:
                         print("SEND: " + str(msg))
